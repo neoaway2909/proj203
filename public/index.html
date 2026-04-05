@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SECURENET - Realtime Dashboard</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body class="dashboard-body">
+    
+    <nav class="glass-header">
+        <div class="logo">O-SECURE<span>NET</span> <span class="badge" id="role-badge">USER</span></div>
+        <div class="nav-controls">
+            <button id="historyBtn" class="btn-primary" style="padding: 8px 16px; margin-right: 15px;">View History</button>
+            <button id="logoutBtn" class="btn-outline">Logout</button>
+        </div>
+    </nav>
+
+    <!-- History Modal -->
+    <div id="historyModal" class="modal-backdrop hidden">
+        <div class="modal-content glass-panel">
+            <div class="modal-header">
+                <h2>Packet History (Last 60 mins)</h2>
+                <button id="closeHistoryBtn" class="btn-outline">Close</button>
+            </div>
+            <div class="table-scroller" style="max-height: 500px; margin-top: 15px;">
+                <table class="packet-table">
+                    <thead>
+                        <tr>
+                            <th>TIME</th>
+                            <th>TOTAL PACKETS</th>
+                            <th>SECURE</th>
+                            <th>UNSECURE</th>
+                            <th>TCP</th>
+                            <th>UDP</th>
+                            <th>HTTPS</th>
+                        </tr>
+                    </thead>
+                    <tbody id="history-tbody">
+                        <tr><td colspan="7" style="text-align: center;">Loading...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <main class="dashboard-grid">
+        <!-- Top Metrics Cards -->
+        <div class="metrics-row">
+            <div class="metric-card glass-panel">
+                <h4>LIVE THROUGHPUT</h4>
+                <div class="metric-value"><span id="metric-throughput">0</span> <small>p/s</small></div>
+            </div>
+            <div class="metric-card glass-panel">
+                <h4>TCP PROTOCOL</h4>
+                <div class="metric-value text-blue"><span id="metric-tcp">0</span>%</div>
+            </div>
+            <div class="metric-card glass-panel">
+                <h4>SECURE (ENCRYPTED)</h4>
+                <div class="metric-value text-green"><span id="metric-enc">0</span>%</div>
+            </div>
+            <div class="metric-card glass-panel">
+                <h4>UNSECURE (CLEARTEXT)</h4>
+                <div class="metric-value text-red"><span id="metric-unenc">0</span>%</div>
+            </div>
+        </div>
+
+        <div class="middle-row">
+            <!-- Left Chart -->
+            <div class="chart-container glass-panel width-2/3">
+                <div class="chart-header">
+                    <h3>Packet Throughput Trend</h3>
+                    <div id="admin-controls" class="hidden" style="display: flex; align-items: center; gap: 10px; background: rgba(255,255,255,0.05); padding: 5px 15px; border-radius: 20px; border: 1px solid rgba(255,255,255,0.1); margin: 0 15px;">
+                        <label style="font-size: 0.85rem;">Sim Rate: <span id="rateLabel">5000</span> p/s</label>
+                        <input type="range" id="rateSlider" min="1000" max="10000" step="500" value="5000" />
+                    </div>
+                    <div class="live-dot pulse">Live</div>
+                </div>
+                <div class="chart-wrapper">
+                    <canvas id="throughputChart"></canvas>
+                </div>
+            </div>
+
+            <!-- Right Chart -->
+            <div class="chart-container glass-panel width-1/3">
+                <div class="chart-header">
+                    <h3>Protocol Distribution</h3>
+                </div>
+                <div class="chart-wrapper">
+                    <canvas id="protocolChart"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <div class="bottom-row">
+            <!-- Encryption breakdown -->
+            <div class="chart-container glass-panel width-1/3">
+                <div class="chart-header">
+                    <h3>Encryption Methods Detected</h3>
+                </div>
+                <div class="chart-wrapper">
+                    <canvas id="encryptionChart"></canvas>
+                </div>
+            </div>
+
+            <!-- Live Packet Stream Table -->
+            <div class="chart-container glass-panel width-2/3">
+                <div class="chart-header">
+                    <h3>Live Packet Stream Header</h3>
+                </div>
+                <div class="table-scroller">
+                    <table class="packet-table">
+                        <thead>
+                            <tr>
+                                <th>TIME</th>
+                                <th>SOURCE</th>
+                                <th>DESTINATION</th>
+                                <th>PROTO</th>
+                                <th>SIZE</th>
+                                <th>STATUS</th>
+                                <th>DETAILS</th>
+                            </tr>
+                        </thead>
+                        <tbody id="packet-tbody">
+                            <!-- Populated via JS -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="js/dashboard.js"></script>
+</body>
+</html>
