@@ -4,6 +4,7 @@ const socketIo = require('socket.io');
 const cors = require('cors');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
+const path = require('path');
 require('dotenv').config();
 
 const db = require('./database');
@@ -18,7 +19,7 @@ const JWT_SECRET = process.env.JWT_SECRET || 'secret123';
 
 app.use(cors());
 app.use(express.json());
-app.use(express.static('public'));
+app.use(express.static(path.join(__dirname, '../frontend')));
 
 // Login Endpoint
 app.post('/api/login', (req, res) => {
