@@ -10,9 +10,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if (user) {
         document.getElementById('role-badge').textContent = user.role.toUpperCase();
-        if (user.role === 'admin') {
-            document.getElementById('admin-controls').classList.remove('hidden');
-        }
+
     }
 
     const logoutBtn = document.getElementById('logoutBtn');
@@ -196,27 +194,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
-    // Admin Rate Controls
-    const rateSlider = document.getElementById('rateSlider');
-    const rateLabel = document.getElementById('rateLabel');
-    if (rateSlider) {
-        rateSlider.addEventListener('input', (e) => {
-            const val = e.target.value;
-            rateLabel.textContent = val;
-        });
-        rateSlider.addEventListener('change', (e) => {
-            socket.emit('setRate', parseInt(e.target.value));
-        });
-    }
 
-    socket.on('rateChanged', (rate) => {
-        if (rateSlider && rateLabel && user.role !== 'admin') {
-           // even if not admin, maybe visually update the slider if it was shown? (it's hidden for normal users)
-        } else if (rateSlider) {
-           rateSlider.value = rate;
-           rateLabel.textContent = rate;
-        }
-    });
 
     // History Modal Logic
     const historyBtn = document.getElementById('historyBtn');

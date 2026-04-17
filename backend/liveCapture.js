@@ -163,10 +163,7 @@ class LiveCapture extends EventEmitter {
         } catch (e) {}
     }
 
-    setRate(rate) {
-        // Ignored for live capture, the rate is dictated by your real Wi-Fi network!
-        console.log("Slider rate changed, but using real Wi-Fi data, so it's ignored.");
-    }
+
 
     stop() {
         if (this.process) this.process.kill();

@@ -8,7 +8,7 @@ const path = require('path');
 require('dotenv').config();
 
 const db = require('./database');
-const PacketGenerator = require('./packetGenerator');
+const LiveCapture = require('./liveCapture');
 
 const app = express();
 const server = http.createServer(app);
@@ -85,8 +85,6 @@ io.use((socket, next) => {
 });
 
 // Packet Generator setup
-// const generator = new PacketGenerator(5000); // Start with 5,000 packets/sec
-const LiveCapture = require('./liveCapture');
 const generator = new LiveCapture(); // This will use purely REAL traffic from your Wi-Fi (en0)
 
 // Aggregation buffers for DB storage
@@ -126,12 +124,7 @@ setInterval(() => {
 io.on('connection', (socket) => {
     console.log('Client connected:', socket.user.username);
     
-    socket.on('setRate', (rate) => {
-        if (socket.user.role === 'admin') {
-            generator.setRate(rate);
-            io.emit('rateChanged', rate);
-        }
-    });
+
 
     socket.on('disconnect', () => {
         console.log('Client disconnected');
